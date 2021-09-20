@@ -19,9 +19,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Cache projct files
-      uses: actions/cache@v1
+    - name: Cache project files
+      uses: actions/upload-artifact@v2
       with:
+        name: project-files
         path: ~/demo
 
   build:
@@ -29,6 +30,10 @@ jobs:
     needs: pull
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: project-files
+
     - name: Set up Compile, Build and Test environment
       uses: actions/setup-java@v1
       with:
