@@ -18,6 +18,6 @@ if [ ! -z "$KUBECONFIG_DATA" ]; then
   rm ~/.kubeconfig
 fi
 
-$KUBECTL_CMD set image statefulset database database=ghcr.io/fvilarinho/demo-database -n demo
-$KUBECTL_CMD set image daemonset backend backend=ghcr.io/fvilarinho/demo-backend -n demo
-$KUBECTL_CMD set image daemonSet frontend frontend=ghcr.io/fvilarinho/demo-frontend -n demo
+$KUBECTL_CMD set image statefulset database database=ghcr.io/fvilarinho/demo-database:gitops -n demo
+$KUBECTL_CMD set image daemonset backend backend=ghcr.io/fvilarinho/demo-backend:gitops -n demo
+$KUBECTL_CMD set image daemonSet frontend frontend=ghcr.io/fvilarinho/demo-frontend:gitops -n demo
