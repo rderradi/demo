@@ -14,46 +14,14 @@ It checks if there are no compile/build errors.
 The tools used are:
 - [`Gradle`](https://www.gradle.org) - Tool to automate the build of the code.
 
-### 2. Code Analysis - SAST (White-box testing)
-All commands of this phase are defined in `codeAnalysis.sh` file. 
-It checks Bugs, Vulnerabilities, Hotspots, Code Smells, Duplications and Coverage of the code.
-If these metrics don't comply with the defined Quality Gate, the pipeline won't continue.
-The tools used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the SAST analysis of the code.
-- [`Sonar`](https://sonardcloud.io) - Service that provides SAST analysis of the code.
-
-Environments variables needed in this phase:
-- `GITHUB_TOKEN`: API Key used by Sonar client to communicate with GitHub.
-- `SONAR_TOKEN`: API Key used by Sonar client to store the generated analysis.
-
-### 3. Libraries Analysis - SAST (White-box testing)
-All commands of this phase are defined in `librariesAnalysis.sh` file. 
-It checks for vulnerabilities in internal and external libraries used in the code.
-The tools used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the SAST analysis of the libraries.
-- [`Snyk`](https://snyk.io) - Service that provides SAST analysis of the libraries.
-
-Environments variables needed in this phase:
-- `SNYK_TOKEN`: API Key used by Snyk to store the generated analysis.
-
-### 4. Packaging
+### 2. Packaging
 All commands of this phase are defined in `package.sh` file.
 It encapsulates all binaries in a Docker image.
 Once the code and libraries were checked, it's time build the package to be used in the next phases.
 The tools/services used are:
 - [`Docker Compose`](https://docs.docker.com/compose) - Tool to build the images.
 
-### 5. Package Analysis - SAST (White-box testing)
-All commands of this phase are defined in `packageAnalysis.sh` file.
-It checks for vulnerabilities in the generated package.
-The tools/services used are:
-- [`Gradle`](https://www.gradle.org) - Tool to automate the SAST analysis of the package.
-- [`Snyk`](https://snyk.io) - Service that provides SAST analysis of the package.
-
-Environments variables needed in this phase:
-- `SNYK_TOKEN`: API Key used by Snyk to store the generated analysis.
-
-### 6. Publishing
+### 3. Publishing
 All commands of this phase are defined in `publish.sh` file.
 It publishes the package in the Docker registry (GitHub Packages).
 The tools/services used are:
@@ -63,21 +31,6 @@ The tools/services used are:
 Environments variables needed in this phase:
 - `DOCKER_REGISTRY_USER`: Username of the Docker registry.
 - `DOCKER_REGISTRY_PASSWORD`: Password of the Docker registry.
-
-### 7. Deploy
-All commands of this phase are defined in `deploy.sh` file.
-It deploys the package in a K3S (Kubernetes) multi-cloud cluster.
-The tools/services used are:
-- [`kubectl`](https://kubernetes.io/docs/reference/kubectl/overview/) - Kubernetes Orchestration tool. 
-- [`Portainer`](https://portainer.io) - Kubernetes Orchestration Portal.
-- [`Linode`](https://www.linode.com) - Cloud (Newark/USA) where the cluster manager is installed.
-- [`DigitalOcean`](https://www.digitalocean.com) - Cloud (Frankfurt/Germany) where the cluster worker is installed.
-
-### 8. DAST (Black-box testing) and RASP (Runtime Application Self-Protection)
-We are doing this phase outside the pipeline but it can be incorporated in the future.
-The tools/services used are:
-- [`Probely`](https://probely.com/) - Services that executes vulnerabilities checks.
-- [`Contrast Security`](https://www.contrastsecurity.com/) - Services that protects and checks vulnerabilities.
 
 Comments
 --------
@@ -106,7 +59,7 @@ How to install
 1. Linux operating system.
 2. You need an IDE such as [IntelliJ](https://www.jetbrains.com/pt-br/idea).
 3. You need an account in the following services:
-`GitHub, Sonarcloud, Snyk, Contrast Security and Probely`.
+`GitHub`.
 4. You need to set the environment variables described above in you system.
 5. The API Keys for each service must be defined in the UI of each service. Please refer the service documentation.
 6. Fork this project from GitHub.
@@ -118,13 +71,6 @@ How to run locally
 1. In the project directory, execute the scripts below:
 `./build.sh; ./package.sh; docker-compose up`
 2. Remember to rename the packages to use your repository id in all YAML and SH files.
-
-How to run in the cloud
------------------------
-1. First, you need to create to find a cloud provider with VPS service (Virtual Private Server).
-2. After you provision the VPS and log into, you need to create a Kubernetes cluster using [`k3s`](https://k3s.io). Follow the instructions of the website.
-3. Then, install the [`Portainer`](https://portainer.io) to facilitate the deployment. Follow the instructions of the website.
-4. Once Portainer is running, just create the namespace and the applications on the cluster.
 
 Other Resources
 ----------------
