@@ -29,10 +29,10 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Compile, Build and Test environment
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
+    - name: Set up Compile, Build and Test environment
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
 
     - name: Compile and Test
       run: ./build.sh
