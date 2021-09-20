@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "gitops"
+      - "develop"
+      - "master"
     paths-ignore:
       - "LICENSE"
       - "*.md"
