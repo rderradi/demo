@@ -11,14 +11,15 @@ on:
 
 jobs:
   run:
+    name: CI/CD Pipeline execution
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Project Files
+    - name: Pull project files from repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
-    - name: Set up Compile, Build and Test environment
+    - name: Set up environment
       uses: actions/setup-java@v1
       with:
         java-version: 11
