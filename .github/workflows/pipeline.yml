@@ -10,25 +10,30 @@ on:
       - "*.yml"
 
 jobs:
-  setup:
-    name: Setup
+  pull:
+    name: Pull from the repository
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Project Files
+    - name: Set up project files
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
-    - name: Set up Compile, Build and Test environment
-      uses: actions/setup-java@v1
+    - name: Cache projct files
+      uses: actions/cache@v1
       with:
-        java-version: 11
+        path: ~/demo
 
   build:
     name: Build
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Compile, Build and Test environment
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
     - name: Compile and Test
       run: ./build.sh
 
