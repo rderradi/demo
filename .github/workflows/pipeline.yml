@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "gitflow"
+      - "develop"
+      - "master"
     paths-ignore:
       - "LICENSE"
       - "*.md"
