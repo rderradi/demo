@@ -3,8 +3,7 @@ name: Pipeline
 on:
   push:
     branches:
-      - "master"
-      - "develop"
+      - "gitflow"
     paths-ignore:
       - "LICENSE"
       - "*.md"
@@ -19,12 +18,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set up Snyk client
-      run: wget https://github.com/snyk/snyk/releases/download/v1.530.0/snyk-linux; mv ./snyk-linux ./snyk; chmod +x ./snyk;
-
-    - name: Set up Kubernetes client
-      run: curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"; mv kubectl.sha256 kubectl; chmod +x kubectl;
-
     - name: Set up Compile, Build and Test environment
       uses: actions/setup-java@v1
       with:
@@ -32,36 +25,15 @@ jobs:
 
     - name: Compile, Build and Test
       run: ./build.sh
-      
-    - name: Code Analysis - SAST (White-box testing)
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./codeAnalysis.sh
-
-    - name: Libraries Analysis - SAST (White-box testing)
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: ./librariesAnalysis.sh
 
     - name: Packaging
       run: ./package.sh
-
-    - name: Package Analysis - SAST (White-box testing)
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: ./packageAnalysis.sh
 
     - name: Publishing
       env:
         DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
         DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       run: ./publish.sh
-
-    - name: Deploy
-      env:
-        KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
-      run: ./deploy.sh
 
   notify:
     runs-on: ubuntu-latest
