@@ -10,48 +10,40 @@ on:
       - "*.yml"
 
 jobs:
-  pull:
-    name: Pull from the repository
+  run:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up project files
+    - name: Set up Project Files
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-
-    - name: Cache project files
-      uses: actions/upload-artifact@v2
-      with:
-        name: project-files
-        path: ~/demo
-
-  build:
-    name: Build
-    needs: pull
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/download-artifact@v2
-      with:
-        name: project-files
 
     - name: Set up Compile, Build and Test environment
       uses: actions/setup-java@v1
       with:
         java-version: 11
 
-    - name: Compile and Test
+    - name: Compile, Build and Test
       run: ./build.sh
 
     - name: Packaging
       run: ./package.sh
 
-  publish:
-    name: Publish
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Publish images to the Docker registry
+    - name: Publishing
       env:
         DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
         DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
       run: ./publish.sh
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: run
+    steps:
+    - name: Notify when fails
+      if: always()
+      uses: ravsamhq/notify-slack-action@master
+      with:
+        status: ${{ job.status }}
+        notify_when: 'failure'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
